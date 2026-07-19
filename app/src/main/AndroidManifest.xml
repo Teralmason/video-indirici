@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/manifest">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:label="Oto İndirici" android:allowBackup="true">
+    <uses-permission android:name="android.permission.INTERNET" />
 
-        <!-- Durum Çubuğu Buton Servisi -->
+    <application
+        android:allowBackup="true"
+        android:label="Video İndirici"
+        android:supportsRtl="true">
+        
         <service
-            android:name=".MyTileService"
-            android:icon="@android:drawable/ic_menu_save"
-            android:label="Videoyu İndir"
+            android:name="com.otomatik.indirici.MyTileService"
+            android:label="Video İndirici"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
             android:exported="true">
             <intent-filter>
