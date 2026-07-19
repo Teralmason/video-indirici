@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 
-// Bu Activity görünmezdir. Tile'a basınca açılır, panoyu okur, indirir, kapanır.
 class TriggerActivity : Activity() {
 
     private var handled = false
@@ -17,8 +16,6 @@ class TriggerActivity : Activity() {
         super.onCreate(savedInstanceState)
     }
 
-    // onResume yerine onWindowFocusChanged kullanıyoruz çünkü pano okumak için
-    // pencerenin GERÇEKTEN odağı almış olması gerekiyor (onResume bunu garanti etmez).
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (!hasFocus || handled) return
@@ -37,18 +34,20 @@ class TriggerActivity : Activity() {
             return
         }
 
-        Toast.makeText(this, "İndiriliyor...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "İndiriliyor: ${link.take(40)}...", Toast.LENGTH_SHORT).show()
         val mainHandler = Handler(Looper.getMainLooper())
 
         Thread {
-            val success = try {
+            val result = try {
                 VideoDownloader.downloadFromLink(applicationContext, link)
             } catch (e: Exception) {
-                e.printStackTrace()
-                false
+                DownloadResult.Failure("Beklenmeyen hata: ${e.message}")
             }
             mainHandler.post {
-                val message = if (success) "Video galeriye kaydedildi ✅" else "Video bulunamadı / indirilemedi ❌"
+                val message = when (result) {
+                    is DownloadResult.Success -> "Video galeriye kaydedildi ✅"
+                    is DownloadResult.Failure -> "❌ ${result.reason}"
+                }
                 Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
                 finish()
             }
