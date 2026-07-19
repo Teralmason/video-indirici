@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeAllMask"
-    android:accessibilityFeedbackType="feedbackGeneric"
-    android:accessibilityFlags="flagDefault|flagReportViewIds|flagRetrieveInteractiveWindows"
-    android:canRetrieveWindowContent="true"
-    android:description="@string/accessibility_service_description"
-    android:notificationTimeout="100" />
+<resources>
+    <string name="app_name">Video İndirici</string>
+    <string name="accessibility_service_description">Sosyal medya uygulamalarında açık olan videoyu tespit edip indirmeye yardımcı olur.</string>
+</resources>
