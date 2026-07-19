@@ -6,58 +6,29 @@ import android.os.Build
 import android.provider.MediaStore
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.regex.Pattern
+
+sealed class DownloadResult {
+    object Success : DownloadResult()
+    data class Failure(val reason: String) : DownloadResult()
+}
 
 object VideoDownloader {
 
     private const val USER_AGENT =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
-    fun downloadFromLink(context: Context, link: String): Boolean {
-        val videoUrl = resolveVideoUrl(link) ?: return false
-        val bytes = fetchBytes(videoUrl) ?: return false
-        saveToGallery(context, bytes)
-        return true
-    }
+    fun downloadFromLink(context: Context, link: String): DownloadResult {
+        val videoUrl = CobaltClient.resolveVideoUrl(link)
+            ?: return DownloadResult.Failure("Cobalt servislerinin hiçbirinden video linki alınamadı")
 
-    // Sayfanın HTML'ini indirip içindeki gerçek video linkini regex ile arıyoruz.
-    // Instagram / Twitter genelde og:video meta etiketinde gerçek linki verir.
-    // TikTok, sayfa içindeki JSON verisinde "playAddr" alanında tutar.
-    private fun resolveVideoUrl(pageUrl: String): String? {
-        val html = fetchHtml(pageUrl) ?: return null
+        val bytes = fetchBytes(videoUrl)
+            ?: return DownloadResult.Failure("Video linki bulundu ama dosya indirilemedi")
 
-        val patterns = listOf(
-            "property=\"og:video:secure_url\" content=\"([^\"]+)\"",
-            "property=\"og:video\" content=\"([^\"]+)\"",
-            "\"playAddr\":\"([^\"]+)\"",
-            "\"downloadAddr\":\"([^\"]+)\"",
-            "\"video_url\":\"([^\"]+)\""
-        )
-
-        for (pattern in patterns) {
-            val matcher = Pattern.compile(pattern).matcher(html)
-            if (matcher.find()) {
-                var url = matcher.group(1) ?: continue
-                url = url.replace("\\u0026", "&").replace("\\/", "/")
-                if (url.startsWith("http")) return url
-            }
-        }
-        return null
-    }
-
-    private fun fetchHtml(pageUrl: String): String? {
-        val conn = URL(pageUrl).openConnection() as HttpURLConnection
-        conn.setRequestProperty("User-Agent", USER_AGENT)
-        conn.connectTimeout = 15000
-        conn.readTimeout = 15000
-        conn.instanceFollowRedirects = true
         return try {
-            conn.inputStream.bufferedReader().use { it.readText() }
+            saveToGallery(context, bytes)
+            DownloadResult.Success
         } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        } finally {
-            conn.disconnect()
+            DownloadResult.Failure("Galeriye kaydetme hatası: ${e.message}")
         }
     }
 
