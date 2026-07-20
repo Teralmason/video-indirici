@@ -18,8 +18,18 @@ object VideoDownloader {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
     fun downloadFromLink(context: Context, link: String): DownloadResult {
-        val videoUrl = CobaltClient.resolveVideoUrl(link)
-            ?: return DownloadResult.Failure("Video linki alınamadı. Detay: ${CobaltClient.lastError}")
+        val videoUrl = if (link.contains("tiktok.com", ignoreCase = true)) {
+            // TikTok linki ise önce TikWM'i dene, o başarısız olursa Cobalt'a düş
+            TikWmClient.resolveVideoUrl(link) ?: CobaltClient.resolveVideoUrl(link)
+        } else {
+            CobaltClient.resolveVideoUrl(link)
+        }
+
+        if (videoUrl == null) {
+            return DownloadResult.Failure(
+                "Video linki alınamadı. TikWM: ${TikWmClient.lastError} | Cobalt: ${CobaltClient.lastError}"
+            )
+        }
 
         val bytes = fetchBytes(videoUrl)
             ?: return DownloadResult.Failure("İndirme başarısız. Detay: $lastFetchError")
