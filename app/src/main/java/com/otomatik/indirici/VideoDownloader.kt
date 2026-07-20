@@ -19,7 +19,7 @@ object VideoDownloader {
 
     fun downloadFromLink(context: Context, link: String): DownloadResult {
         val videoUrl = CobaltClient.resolveVideoUrl(link)
-            ?: return DownloadResult.Failure("Cobalt servislerinin hiçbirinden video linki alınamadı")
+            ?: return DownloadResult.Failure("Video linki alınamadı. Detay: ${CobaltClient.lastError}")
 
         val bytes = fetchBytes(videoUrl)
             ?: return DownloadResult.Failure("Video linki bulundu ama dosya indirilemedi")
