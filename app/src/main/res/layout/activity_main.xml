@@ -73,7 +73,6 @@
                 android:gravity="center"
                 android:text="Durum çubuğunu aşağı çek, düzenle (✏️) simgesine dokun ve &quot;Video İndirici&quot; kısayolunu aktif alana sürükle."
                 android:textColor="@color/text_secondary"
-                android:textColor="@color/text_secondary"
                 android:textSize="15sp"
                 android:lineSpacingExtra="4dp" />
         </LinearLayout>
