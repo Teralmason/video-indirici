@@ -73,8 +73,8 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-        flipper.inAnimation = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left)
-        flipper.outAnimation = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right)
+        flipper.inAnimation = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_right)
+        flipper.outAnimation = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_left)
         flipper.showNext()
         currentPage++
         updateDots()
