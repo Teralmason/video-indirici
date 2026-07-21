@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_dark">
+    android:background="@color/bg_page">
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="Durum çubuğunu aşağı çek, düzenle (✏️) simgesine dokun ve &quot;Video İndirici&quot; kısayolunu aktif alana sürükle."
+                android:text="Durum çubuğunu aşağı çek, düzenle (✏️) simgesine dokun ve \"Video İndirici\" kısayolunu aktif alana sürükle."
                 android:textColor="@color/text_secondary"
                 android:textSize="15sp"
                 android:lineSpacingExtra="4dp" />
